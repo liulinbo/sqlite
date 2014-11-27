@@ -1,16 +1,17 @@
 package com.nimos.sqlite;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
-import android.app.Activity;
+import net.tsz.afinal.FinalActivity;
 import android.app.ActionBar;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
-import android.support.v13.app.FragmentPagerAdapter;
 import android.os.Bundle;
+import android.support.v13.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -18,7 +19,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-public class MainActivity extends Activity implements ActionBar.TabListener {
+import com.nimos.sqlite.fragment.OneFragment;
+import com.nimos.sqlite.fragment.ThreeFragment;
+import com.nimos.sqlite.fragment.TwoFragment;
+import com.nimos.sqlite.fragment.adapter.MainFragmentAdapter;
+
+public class MainActivity extends FinalActivity implements ActionBar.TabListener {
 
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
@@ -28,29 +34,37 @@ public class MainActivity extends Activity implements ActionBar.TabListener {
      * may be best to switch to a
      * {@link android.support.v13.app.FragmentStatePagerAdapter}.
      */
-    SectionsPagerAdapter mSectionsPagerAdapter;
-
+	MainFragmentAdapter mAdapter;
     /**
      * The {@link ViewPager} that will host the section contents.
      */
     ViewPager mViewPager;
+    
+    List<Fragment> mFragmentList= new ArrayList<Fragment>();
+    List<String> mTitleList=new ArrayList<String>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
         // Set up the action bar.
         final ActionBar actionBar = getActionBar();
         actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
 
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
-        mSectionsPagerAdapter = new SectionsPagerAdapter(getFragmentManager());
+        mFragmentList.add(new OneFragment());
+        mFragmentList.add(new TwoFragment());
+        mFragmentList.add(new ThreeFragment());
+        mTitleList.add("one");
+        mTitleList.add("two");
+        mTitleList.add("three");
+        mAdapter = new MainFragmentAdapter(getFragmentManager(),mFragmentList,mTitleList);
 
         // Set up the ViewPager with the sections adapter.
         mViewPager = (ViewPager) findViewById(R.id.pager);
-        mViewPager.setAdapter(mSectionsPagerAdapter);
+        mViewPager.setAdapter(mAdapter);
+        mViewPager.setOffscreenPageLimit(0);
 
         // When swiping between different sections, select the corresponding
         // tab. We can also use ActionBar.Tab#select() to do this if we have
@@ -63,14 +77,14 @@ public class MainActivity extends Activity implements ActionBar.TabListener {
         });
 
         // For each of the sections in the app, add a tab to the action bar.
-        for (int i = 0; i < mSectionsPagerAdapter.getCount(); i++) {
+        for (int i = 0; i < mAdapter.getCount(); i++) {
             // Create a tab with text corresponding to the page title defined by
             // the adapter. Also specify this Activity object, which implements
             // the TabListener interface, as the callback (listener) for when
             // this tab is selected.
             actionBar.addTab(
                     actionBar.newTab()
-                            .setText(mSectionsPagerAdapter.getPageTitle(i))
+                            .setText(mAdapter.getPageTitle(i))
                             .setTabListener(this));
         }
     }

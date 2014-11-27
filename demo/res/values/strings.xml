@@ -7,4 +7,8 @@
     <string name="title_section3">Section 3</string>
     <string name="action_settings">Settings</string>
 
+    <string name="db_add">Add</string>
+    <string name="db_delete">Delete</string>
+    <string name="db_update">Update</string>
+    <string name="db_query">Query</string>
 </resources>
